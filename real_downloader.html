@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Downloader - 5G Simulator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap');
+        
+        body {
+            background-color: #f4f6f8; color: #1a1a1a; font-family: 'Montserrat', sans-serif;
+            height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .container {
+            background: white; padding: 40px; border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); text-align: center; max-width: 500px; width: 90%;
+        }
+
+        h1 { font-weight: 900; margin-bottom: 5px; }
+        .subtitle { color: #5f6368; margin-bottom: 30px; font-weight: 600; }
+
+        .speed-box {
+            background: #eef2ff; border: 2px solid #1a73e8; border-radius: 15px; padding: 20px; margin-bottom: 20px;
+        }
+        .big-val { font-size: 4rem; font-weight: 700; color: #1a73e8; line-height: 1; }
+        .unit { font-size: 1.2rem; font-weight: 700; color: #1a73e8; }
+
+        .btn {
+            background: #1a1a1a; color: white; border: none; padding: 15px 40px;
+            font-size: 1.2rem; font-weight: 700; border-radius: 50px; cursor: pointer; transition: 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); background: #1a73e8; }
+
+        .result-row { display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.9rem; color: #555; }
+        .bold { font-weight: 700; color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Real Downloader</h1>
+        <div class="subtitle">5G Transfer Simulator</div>
+
+        <div class="speed-box">
+            <div class="big-val" id="val">0.0</div>
+            <div class="unit">MB/s</div>
+        </div>
+
+        <div id="results" style="display:none; text-align:left; margin-bottom:20px;">
+            <div class="result-row"><span>File Size:</span> <span class="bold">50 GB</span></div>
+            <div class="result-row"><span>Est. Time:</span> <span class="bold" id="time">--</span></div>
+            <div class="result-row"><span>Status:</span> <span class="bold" style="color:#1a73e8;">Testing...</span></div>
+        </div>
+
+        <button class="btn" id="btn" onclick="startTest()">START TEST</button>
+    </div>
+
+    <script>
+        async function startTest() {
+            const btn = document.getElementById('btn');
+            const res = document.getElementById('results');
+            const val = document.getElementById('val');
+            
+            btn.style.display = 'none';
+            res.style.display = 'block';
+
+            // HYPER-THREADED ENGINE (Same as main suite)
+            const TEST_URL = "https://speed.cloudflare.com/__down?bytes=50000000";
+            let threads = [];
+            let totalBytes = 0;
+            let connections = 4; 
+            const startTime = performance.now();
+
+            function spawn() {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', `${TEST_URL}&z=${Math.random()}`, true);
+                xhr.responseType = 'arraybuffer';
+                xhr.onprogress = e => { totalBytes += (e.loaded - (xhr.prev||0)); xhr.prev=e.loaded; };
+                xhr.onload = () => { if(performance.now()-startTime < 8000) { xhr.prev=0; spawn(); }};
+                xhr.send();
+                threads.push(xhr);
+            }
+
+            for(let i=0; i<connections; i++) spawn();
+
+            const interval = setInterval(() => {
+                const duration = (performance.now() - startTime) / 1000;
+                const speedMbps = ((totalBytes * 8) / duration) / 1000000;
+                
+                // Convert to MB/s
+                const speedMBps = speedMbps / 8;
+                val.innerText = speedMBps.toFixed(1);
+
+                // Calculate 50GB Time
+                const seconds = (50 * 1024) / speedMBps;
+                const mins = (seconds / 60).toFixed(1);
+                document.getElementById('time').innerText = mins + " Minutes";
+
+                // Auto-scale connections for 5G speed
+                if(speedMbps > 100 && connections < 8) { spawn(); connections++; }
+                if(speedMbps > 400 && connections < 16) { spawn(); connections++; }
+
+                if(duration > 8) {
+                    clearInterval(interval);
+                    threads.forEach(t => t.abort());
+                    btn.style.display = 'inline-block';
+                    btn.innerText = "TEST AGAIN";
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>
