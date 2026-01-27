@@ -1,113 +1,316 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Downloader - 5G Simulator</title>
+    <title>Real Downloader - 10GB Sim</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap');
         
+        :root {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #1a1a1a;
+            --subtext: #6b7280;
+            --blue: #2563eb;
+            --blue-dim: rgba(37, 99, 235, 0.1);
+            --red: #dc2626;
+            --green: #16a34a;
+            --bar-bg: #e5e7eb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+
         body {
-            background-color: #f4f6f8; color: #1a1a1a; font-family: 'Montserrat', sans-serif;
-            height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
         .container {
-            background: white; padding: 40px; border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1); text-align: center; max-width: 500px; width: 90%;
+            background: var(--card);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            transition: transform 0.3s;
         }
 
-        h1 { font-weight: 900; margin-bottom: 5px; }
-        .subtitle { color: #5f6368; margin-bottom: 30px; font-weight: 600; }
-
-        .speed-box {
-            background: #eef2ff; border: 2px solid #1a73e8; border-radius: 15px; padding: 20px; margin-bottom: 20px;
+        h1 { font-weight: 900; font-size: 1.8rem; margin-bottom: 5px; letter-spacing: -0.5px; }
+        .badge { 
+            background: var(--blue-dim); color: var(--blue); 
+            padding: 5px 12px; border-radius: 20px; 
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            display: inline-block; margin-bottom: 30px;
         }
-        .big-val { font-size: 4rem; font-weight: 700; color: #1a73e8; line-height: 1; }
-        .unit { font-size: 1.2rem; font-weight: 700; color: #1a73e8; }
 
+        /* Speed Display */
+        .speed-card {
+            background: #fafafa;
+            border: 2px solid var(--blue);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .speed-val { font-size: 3.5rem; font-weight: 800; color: var(--blue); line-height: 1; }
+        .speed-unit { font-size: 1rem; font-weight: 700; color: var(--subtext); margin-top: 5px; }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .prog-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; color: var(--subtext); }
+        .prog-track {
+            background: var(--bar-bg);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .prog-fill {
+            height: 100%;
+            background: var(--blue);
+            width: 0%;
+            border-radius: 6px;
+            transition: width 0.2s linear;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .stat-item { background: #fafafa; padding: 15px; border-radius: 12px; border: 1px solid #eee; }
+        .stat-label { font-size: 0.7rem; color: var(--subtext); text-transform: uppercase; font-weight: 700; margin-bottom: 5px; }
+        .stat-val { font-size: 1rem; font-weight: 700; color: var(--text); }
+
+        /* Buttons */
         .btn {
-            background: #1a1a1a; color: white; border: none; padding: 15px 40px;
-            font-size: 1.2rem; font-weight: 700; border-radius: 50px; cursor: pointer; transition: 0.2s;
+            width: 100%;
+            padding: 18px;
+            border-radius: 16px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .btn:hover { transform: scale(1.05); background: #1a73e8; }
+        .btn-start { background: var(--text); color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-start:hover { transform: translateY(-2px); background: var(--blue); box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3); }
+        
+        .btn-stop { background: var(--red); color: white; display: none; }
+        .btn-stop:hover { background: #b91c1c; }
 
-        .result-row { display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.9rem; color: #555; }
-        .bold { font-weight: 700; color: #000; }
+        /* Responsive */
+        @media (max-width: 400px) {
+            .container { padding: 25px; }
+            .speed-val { font-size: 2.8rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Real Downloader</h1>
-        <div class="subtitle">5G Transfer Simulator</div>
+        <div class="badge">10 GB Simulator</div>
 
-        <div class="speed-box">
-            <div class="big-val" id="val">0.0</div>
-            <div class="unit">MB/s</div>
+        <div class="speed-card">
+            <div class="speed-val" id="disp-speed">0.0</div>
+            <div class="speed-unit">MB/s (Megabytes/sec)</div>
         </div>
 
-        <div id="results" style="display:none; text-align:left; margin-bottom:20px;">
-            <div class="result-row"><span>File Size:</span> <span class="bold">50 GB</span></div>
-            <div class="result-row"><span>Est. Time:</span> <span class="bold" id="time">--</span></div>
-            <div class="result-row"><span>Status:</span> <span class="bold" style="color:#1a73e8;">Testing...</span></div>
+        <div class="progress-container">
+            <div class="prog-header">
+                <span>Progress (10 GB Target)</span>
+                <span id="disp-percent">0.0%</span>
+            </div>
+            <div class="prog-track">
+                <div class="prog-fill" id="prog-bar"></div>
+            </div>
         </div>
 
-        <button class="btn" id="btn" onclick="startTest()">START TEST</button>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-label">Downloaded</div>
+                <div class="stat-val" id="disp-downloaded">0 MB</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Est. Time Remaining</div>
+                <div class="stat-val" id="disp-time" style="color:var(--blue);">--</div>
+            </div>
+        </div>
+
+        <button class="btn btn-start" id="btn-start" onclick="startSimulation()">Start 10GB Download</button>
+        <button class="btn btn-stop" id="btn-stop" onclick="stopSimulation()">Stop Download</button>
     </div>
 
     <script>
-        async function startTest() {
-            const btn = document.getElementById('btn');
-            const res = document.getElementById('results');
-            const val = document.getElementById('val');
+        // --- CONFIGURATION ---
+        const TARGET_SIZE_GB = 10;
+        const TARGET_SIZE_MB = TARGET_SIZE_GB * 1024; // 10,240 MB
+        const TEST_URL = "https://speed.cloudflare.com/__down?bytes=50000000"; // 50MB chunks
+        
+        // --- STATE ---
+        let isRunning = false;
+        let threads = [];
+        let totalBytesDownloaded = 0;
+        let startTime = 0;
+        let intervalId = null;
+
+        // --- DOM ELEMENTS ---
+        const elSpeed = document.getElementById('disp-speed');
+        const elPercent = document.getElementById('disp-percent');
+        const elBar = document.getElementById('prog-bar');
+        const elDownloaded = document.getElementById('disp-downloaded');
+        const elTime = document.getElementById('disp-time');
+        const btnStart = document.getElementById('btn-start');
+        const btnStop = document.getElementById('btn-stop');
+
+        function startSimulation() {
+            if (isRunning) return;
+            isRunning = true;
             
-            btn.style.display = 'none';
-            res.style.display = 'block';
+            // Reset UI
+            btnStart.style.display = 'none';
+            btnStop.style.display = 'block';
+            elBar.style.width = '0%';
+            totalBytesDownloaded = 0;
+            startTime = performance.now();
+            threads = [];
 
-            // HYPER-THREADED ENGINE (Same as main suite)
-            const TEST_URL = "https://speed.cloudflare.com/__down?bytes=50000000";
-            let threads = [];
-            let totalBytes = 0;
-            let connections = 4; 
-            const startTime = performance.now();
+            // Start Engine
+            let activeConnections = 0;
+            const initialThreads = 4;
 
-            function spawn() {
+            // Thread Spawner
+            function spawnThread() {
+                if (!isRunning) return;
                 const xhr = new XMLHttpRequest();
-                xhr.open('GET', `${TEST_URL}&z=${Math.random()}`, true);
+                // Random ID prevents caching
+                xhr.open('GET', `${TEST_URL}&id=${Math.random()}`, true);
                 xhr.responseType = 'arraybuffer';
-                xhr.onprogress = e => { totalBytes += (e.loaded - (xhr.prev||0)); xhr.prev=e.loaded; };
-                xhr.onload = () => { if(performance.now()-startTime < 8000) { xhr.prev=0; spawn(); }};
+                
+                let prevLoaded = 0;
+                xhr.onprogress = (e) => {
+                    if (!isRunning) return;
+                    const loaded = e.loaded;
+                    const diff = loaded - prevLoaded;
+                    prevLoaded = loaded;
+                    totalBytesDownloaded += diff;
+                };
+
+                xhr.onload = () => {
+                    if (!isRunning) return;
+                    spawnThread(); // Keep connection alive (Infinite stream)
+                };
+
+                xhr.onerror = () => { if(isRunning) spawnThread(); };
+                
                 xhr.send();
                 threads.push(xhr);
+                activeConnections++;
             }
 
-            for(let i=0; i<connections; i++) spawn();
+            // Launch Initial Threads
+            for(let i=0; i<initialThreads; i++) spawnThread();
 
-            const interval = setInterval(() => {
-                const duration = (performance.now() - startTime) / 1000;
-                const speedMbps = ((totalBytes * 8) / duration) / 1000000;
+            // --- MAIN LOOP (Updates every 100ms) ---
+            intervalId = setInterval(() => {
+                if (!isRunning) return;
+
+                const currentTime = performance.now();
+                const durationSec = (currentTime - startTime) / 1000;
                 
-                // Convert to MB/s
-                const speedMBps = speedMbps / 8;
-                val.innerText = speedMBps.toFixed(1);
+                if (durationSec < 0.1) return; // Wait for stable data
 
-                // Calculate 50GB Time
-                const seconds = (50 * 1024) / speedMBps;
-                const mins = (seconds / 60).toFixed(1);
-                document.getElementById('time').innerText = mins + " Minutes";
+                // 1. Calculate Real-Time Speed (MB/s)
+                const totalMB = totalBytesDownloaded / (1024 * 1024);
+                const speedMBps = totalMB / durationSec;
+                
+                // 2. Adaptive Thread Scaling (Simulate 5G)
+                // If speed is high, open more pipes to saturate bandwidth
+                if (speedMBps > 10 && activeConnections < 8) { spawnThread(); }
+                if (speedMBps > 30 && activeConnections < 12) { spawnThread(); }
+                if (speedMBps > 50 && activeConnections < 16) { spawnThread(); }
 
-                // Auto-scale connections for 5G speed
-                if(speedMbps > 100 && connections < 8) { spawn(); connections++; }
-                if(speedMbps > 400 && connections < 16) { spawn(); connections++; }
+                // 3. Update UI
+                elSpeed.innerText = speedMBps.toFixed(1);
+                elDownloaded.innerText = totalMB.toFixed(1) + " MB";
 
-                if(duration > 8) {
-                    clearInterval(interval);
-                    threads.forEach(t => t.abort());
-                    btn.style.display = 'inline-block';
-                    btn.innerText = "TEST AGAIN";
+                // 4. Progress Calculation (Actual vs 10GB)
+                const percent = (totalMB / TARGET_SIZE_MB) * 100;
+                elPercent.innerText = percent.toFixed(2) + "%";
+                elBar.style.width = Math.min(percent, 100) + "%";
+
+                // 5. Time Estimation (Remaining)
+                const remainingMB = TARGET_SIZE_MB - totalMB;
+                if (speedMBps > 0) {
+                    const secondsLeft = remainingMB / speedMBps;
+                    elTime.innerText = formatTime(secondsLeft);
+                } else {
+                    elTime.innerText = "Calculating...";
                 }
+
+                // Auto-Finish (If by some miracle they actually download 10GB)
+                if (totalMB >= TARGET_SIZE_MB) {
+                    stopSimulation(true);
+                }
+
             }, 100);
+        }
+
+        function stopSimulation(finished = false) {
+            isRunning = false;
+            clearInterval(intervalId);
+            
+            // Kill all connections
+            threads.forEach(t => t.abort());
+            threads = [];
+
+            // UI Reset
+            btnStop.style.display = 'none';
+            btnStart.style.display = 'block';
+            
+            if (finished) {
+                btnStart.innerText = "Download Complete! Again?";
+                elTime.innerText = "Done";
+                elBar.style.width = "100%";
+                elPercent.innerText = "100%";
+            } else {
+                btnStart.innerText = "Resume / Restart Test";
+                elTime.innerText = "Paused / Stopped";
+            }
+        }
+
+        // Helper: Format Seconds into Human Readable Time
+        function formatTime(seconds) {
+            if (!isFinite(seconds)) return "--";
+            if (seconds < 60) return Math.floor(seconds) + " Seconds";
+            
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) {
+                const secs = Math.floor(seconds % 60);
+                return `${minutes} min ${secs} sec`;
+            }
+
+            const hours = Math.floor(minutes / 60);
+            const remMins = minutes % 60;
+            return `${hours} hr ${remMins} min`;
         }
     </script>
 </body>
