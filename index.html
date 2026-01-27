@@ -20,6 +20,7 @@
             --gauge-track: #e0e0e0;
             --gauge-fill-dl: #1a73e8; 
             --gauge-fill-ul: #9334e6;
+            --stop-btn: #dc2626; /* Red for stop button */
         }
 
         [data-theme="dark"] {
@@ -34,6 +35,7 @@
             --gauge-track: #151b2b;
             --gauge-fill-dl: #00f0ff; 
             --gauge-fill-ul: #bd00ff; 
+            --stop-btn: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; transition: background 0.3s, color 0.3s; }
@@ -51,14 +53,10 @@
             position: relative;
         }
 
-        /* --- HAMBURGER MENU --- */
-        .menu-btn {
-            position: absolute; top: 30px; left: 30px; z-index: 200; cursor: pointer;
-            display: flex; flex-direction: column; gap: 6px;
-        }
+        /* --- NAVIGATION --- */
+        .menu-btn { position: absolute; top: 30px; left: 30px; z-index: 200; cursor: pointer; display: flex; flex-direction: column; gap: 6px; }
         .bar { width: 35px; height: 3px; background: var(--text-main); border-radius: 3px; transition: 0.3s; }
         
-        /* SIDEBAR */
         .sidebar {
             position: fixed; top: 0; left: 0; height: 100%; width: 280px;
             background: var(--bg-panel); z-index: 100; transform: translateX(-100%);
@@ -72,13 +70,9 @@
         }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
 
-        .menu-item {
-            font-size: 1.2rem; font-weight: 700; color: var(--text-dim); cursor: pointer;
-            padding: 10px 0; border-bottom: 1px solid var(--gauge-track);
-        }
+        .menu-item { font-size: 1.2rem; font-weight: 700; color: var(--text-dim); cursor: pointer; padding: 10px 0; border-bottom: 1px solid var(--gauge-track); }
         .menu-item:hover, .menu-item.active { color: var(--accent); }
 
-        /* --- THEME TOGGLE --- */
         .theme-switch {
             position: absolute; top: 30px; right: 30px;
             background: var(--bg-panel); border: 1px solid var(--text-dim);
@@ -87,102 +81,65 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 100;
         }
 
-        /* --- HEADER --- */
         .branding { position: absolute; top: 40px; text-align: center; width: 100%; pointer-events: none; }
         .branding h1 { font-size: 2rem; font-weight: 300; letter-spacing: -1px; }
         .branding h1 span { font-weight: 900; }
 
-        /* --- VIEW CONTAINERS --- */
+        /* --- VIEWS --- */
         .view-section { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.4s ease; }
         .view-section.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- GO BUTTON --- */
-        .go-container {
-            position: relative; width: 280px; height: 280px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
+        /* --- SPEEDTEST UI (Unchanged) --- */
+        .go-container { position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         .go-container:hover { transform: scale(1.05); }
         .go-container:active { transform: scale(0.95); }
-
-        .ring {
-            position: absolute; border-radius: 50%; border: 2px solid var(--accent);
-            opacity: 0.2; box-shadow: 0 0 20px var(--accent-glow);
-        }
+        .ring { position: absolute; border-radius: 50%; border: 2px solid var(--accent); opacity: 0.2; box-shadow: 0 0 20px var(--accent-glow); }
         [data-theme="dark"] .ring { border-color: var(--accent); opacity: 0.5; box-shadow: 0 0 30px var(--accent); }
         .r-1 { width: 100%; height: 100%; animation: pulse 3s infinite; }
         .r-2 { width: 85%; height: 85%; border-width: 1px; border-style: dashed; animation: spin 10s linear infinite; }
-
-        .go-btn {
-            width: 180px; height: 180px; border-radius: 50%; background: var(--bg-body);
-            border: 4px solid var(--btn-border); color: var(--text-main); font-size: 4rem; font-weight: 900;
-            display: flex; align-items: center; justify-content: center; z-index: 10;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
-        }
+        .go-btn { width: 180px; height: 180px; border-radius: 50%; background: var(--bg-body); border: 4px solid var(--btn-border); color: var(--text-main); font-size: 4rem; font-weight: 900; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); }
         [data-theme="dark"] .go-btn { box-shadow: inset 0 0 30px rgba(0,0,0,0.5); text-shadow: 0 0 10px rgba(255,255,255,0.8); }
 
-        /* --- METER UI --- */
         .meter-ui { display: none; position: relative; width: 320px; height: 320px; flex-direction: column; align-items: center; justify-content: center; }
         .speed-val { font-size: 6rem; font-weight: 700; line-height: 1; letter-spacing: -3px; font-variant-numeric: tabular-nums; z-index: 2; }
         .speed-unit { font-size: 1.2rem; color: var(--text-dim); font-weight: 600; margin-top: 5px; text-transform: uppercase; }
-        
         .gauge-svg { position: absolute; width: 100%; height: 100%; transform: rotate(-90deg); }
         .gauge-bg { fill: none; stroke: var(--gauge-track); stroke-width: 12; }
-        .gauge-fill { 
-            fill: none; stroke: var(--gauge-fill-dl); stroke-width: 12; stroke-linecap: round; 
-            stroke-dasharray: 880; stroke-dashoffset: 880; transition: stroke-dashoffset 0.1s linear, stroke 0.3s;
-            filter: drop-shadow(0 0 4px var(--accent-glow));
-        }
+        .gauge-fill { fill: none; stroke: var(--gauge-fill-dl); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 880; stroke-dashoffset: 880; transition: stroke-dashoffset 0.1s linear, stroke 0.3s; filter: drop-shadow(0 0 4px var(--accent-glow)); }
         .status-pill { margin-top: 20px; background: var(--bg-panel); padding: 8px 24px; border-radius: 20px; color: var(--text-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; border: 1px solid var(--gauge-track); }
 
-        /* --- RESULTS UI --- */
         .results-ui { display: none; width: 100%; max-width: 800px; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         .hero-result { display: flex; justify-content: center; gap: 60px; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid var(--gauge-track); }
         .res-box { text-align: center; }
         .res-num { font-size: 4rem; font-weight: 700; }
         .res-lbl { color: var(--text-dim); font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; margin-top: 5px; }
-
-        /* Secondary Stats Grid (Ping Bottom) */
-        .sub-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center;
-            max-width: 600px; margin: 0 auto 40px auto;
-        }
+        .sub-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; max-width: 600px; margin: 0 auto 40px auto; }
         .sub-val { font-size: 1.5rem; font-weight: 600; color: var(--text-main); }
         .sub-lbl { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; margin-top: 5px; }
         
-        /* Buttons */
-        .restart-btn { 
-            background: transparent; border: 2px solid var(--text-main); color: var(--text-main); 
-            padding: 12px 40px; font-size: 1rem; font-weight: 700; cursor: pointer; border-radius: 4px; 
-            min-width: 180px;
-        }
+        .restart-btn { background: transparent; border: 2px solid var(--text-main); color: var(--text-main); padding: 12px 40px; font-size: 1rem; font-weight: 700; cursor: pointer; border-radius: 4px; min-width: 180px; }
         .restart-btn:hover { background: var(--text-main); color: var(--bg-body); }
-        
-        .details-btn {
-            background: transparent; border: none; color: var(--text-dim);
-            font-size: 0.9rem; font-weight: 600; cursor: pointer; border-bottom: 1px dashed var(--text-dim);
-        }
+        .details-btn { background: transparent; border: none; color: var(--text-dim); font-size: 0.9rem; font-weight: 600; cursor: pointer; border-bottom: 1px dashed var(--text-dim); }
         .details-btn:hover { color: var(--text-main); border-bottom-style: solid; }
-
-        /* Expanded Details Box */
-        .details-box {
-            display: none; margin-top: 30px; background: var(--bg-panel); padding: 25px;
-            border-radius: 8px; border: 1px solid var(--gauge-track); text-align: left;
-            max-width: 500px; margin-left: auto; margin-right: auto;
-        }
+        .details-box { display: none; margin-top: 30px; background: var(--bg-panel); padding: 25px; border-radius: 8px; border: 1px solid var(--gauge-track); text-align: left; max-width: 500px; margin-left: auto; margin-right: auto; }
         .d-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; align-items: center; }
         .d-key { color: var(--text-dim); text-transform: uppercase; font-size: 0.75rem; font-weight: 700; }
         .d-val { font-weight: 600; }
 
-        /* --- 2. REAL DOWNLOADER UI --- */
-        .real-card {
-            background: var(--bg-panel); padding: 40px; border-radius: 20px; text-align: center;
-            border: 1px solid var(--gauge-track); max-width: 500px; width: 90%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        .big-mb { font-size: 5rem; font-weight: 700; color: var(--accent); line-height: 1; }
-        .eta-display { margin-top: 20px; padding: 15px; background: rgba(128,128,128,0.1); border-radius: 10px; font-weight: 600; font-size: 1.1rem; }
+        /* --- REAL DOWNLOADER UI (UPDATED) --- */
+        .real-card { background: var(--bg-panel); padding: 40px; border-radius: 20px; text-align: center; border: 1px solid var(--gauge-track); max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .big-mb { font-size: 4rem; font-weight: 800; color: var(--accent); line-height: 1; }
+        
+        /* New Progress Bar Styles */
+        .progress-box { margin-top: 30px; text-align: left; }
+        .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--text-dim); margin-bottom: 8px; }
+        .progress-track { background: var(--gauge-track); height: 14px; border-radius: 7px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gauge-fill-dl); width: 0%; border-radius: 7px; transition: width 0.2s linear; box-shadow: 0 0 10px var(--accent-glow); }
+        
+        /* Stop Button */
+        .stop-btn { background: var(--stop-btn); color: white; border: none; padding: 15px 40px; font-size: 1rem; font-weight: 800; border-radius: 50px; cursor: pointer; margin-top: 30px; transition: 0.2s; box-shadow: 0 5px 20px rgba(220, 38, 38, 0.4); }
+        .stop-btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
         @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.1; } 50% { opacity: 0.4; } 100% { transform: scale(1.3); opacity: 0; } }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -209,7 +166,6 @@
     </div>
 
     <div id="view-home" class="view-section active">
-        
         <div id="start-view" class="go-container" onclick="startSpeedEngine()">
             <div class="ring r-1"></div>
             <div class="ring r-2"></div>
@@ -237,20 +193,17 @@
                     <div class="res-num" id="final-ul">--</div>
                 </div>
             </div>
-
             <div class="sub-grid">
                 <div><div class="sub-val" id="final-ping">--</div><div class="sub-lbl">Ping</div></div>
                 <div><div class="sub-val" id="final-jitter">--</div><div class="sub-lbl">Jitter</div></div>
                 <div><div class="sub-val">0%</div><div class="sub-lbl">Packet Loss</div></div>
             </div>
-
             <div style="text-align: center;">
                 <button class="restart-btn" onclick="resetSpeedTest()">TEST AGAIN</button>
                 <div style="margin-top: 15px;">
                     <button class="details-btn" onclick="toggleDetails()">Show More Details</button>
                 </div>
             </div>
-
             <div id="details-content" class="details-box">
                 <div class="d-row"><span class="d-key">Client IP</span> <span id="d-ip" class="d-val">Detecting...</span></div>
                 <div class="d-row"><span class="d-key">ISP</span> <span id="d-isp" class="d-val">Detecting...</span></div>
@@ -262,51 +215,49 @@
 
     <div id="view-real" class="view-section">
         <div class="real-card" id="real-start-card">
-            <h1 style="margin-bottom:10px;">10GB File Test</h1>
-            <p style="color:var(--text-dim); margin-bottom:30px;">Simulate downloading a 10GB file to check real-world time.</p>
-            <div class="go-btn" style="width:120px; height:120px; font-size:1.5rem; margin:0 auto;" onclick="startRealEngine()">START</div>
+            <h1 style="margin-bottom:10px;">10GB Simulator</h1>
+            <p style="color:var(--text-dim); margin-bottom:30px;">Download a virtual 10GB file to see real-world speed and time.</p>
+            <div class="go-btn" style="width:120px; height:120px; font-size:1.5rem; margin:0 auto;" onclick="startRealDownload()">START</div>
         </div>
 
         <div class="real-card" id="real-run-card" style="display:none;">
-            <div style="color:var(--text-dim); font-weight:700; letter-spacing:1px;">TRANSFER RATE</div>
+            <div style="color:var(--text-dim); font-weight:700; letter-spacing:1px; margin-bottom:10px;">CURRENT SPEED</div>
             <div class="big-mb" id="real-mb-val">0.0</div>
-            <div style="font-size:1.5rem; margin-bottom:20px;">MB/s</div>
+            <div style="font-size:1.5rem; margin-bottom:30px;">MB/s</div>
             
-            <div class="eta-display">
-                <span id="time-val">Calculating...</span> <br>
-                <span style="font-weight:400; font-size:0.8rem; color:var(--text-dim);">for 10GB</span>
+            <div class="d-row"><span class="d-key">Downloaded</span> <span class="d-val" id="d-downloaded">0 MB / 10,240 MB</span></div>
+            <div class="d-row"><span class="d-key">Time Remaining</span> <span class="d-val" id="d-time" style="color:var(--gauge-fill-dl);">Calculating...</span></div>
+
+            <div class="progress-box">
+                <div class="progress-header">
+                    <span>Progress</span>
+                    <span id="d-percent">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="real-prog-bar"></div>
+                </div>
             </div>
             
-            <button class="restart-btn" style="margin-top: 30px; font-size: 0.9rem;" onclick="resetRealTest()">Test Again</button>
+            <button class="stop-btn" id="btn-stop" onclick="stopRealDownload()">STOP DOWNLOAD</button>
+            <button class="restart-btn" id="btn-restart" style="display:none; margin-top:30px;" onclick="resetRealTest()">TEST AGAIN</button>
         </div>
     </div>
 
     <script>
-        // --- NAVIGATION LOGIC ---
-        function toggleMenu() {
-            document.querySelector('.sidebar').classList.toggle('open');
-            document.querySelector('.sidebar-overlay').classList.toggle('active');
-        }
-
+        // --- NAVIGATION ---
+        function toggleMenu() { document.querySelector('.sidebar').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('active'); }
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById('view-' + viewName).classList.add('active');
-            
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             event.target.classList.add('active');
             toggleMenu(); 
         }
-
         function toggleTheme() {
             const html = document.documentElement;
             const btn = document.querySelector('.theme-switch');
-            if (html.getAttribute('data-theme') === 'light') {
-                html.setAttribute('data-theme', 'dark');
-                btn.innerText = "Light Mode";
-            } else {
-                html.setAttribute('data-theme', 'light');
-                btn.innerText = "Dark Mode";
-            }
+            if (html.getAttribute('data-theme') === 'light') { html.setAttribute('data-theme', 'dark'); btn.innerText = "Light Mode"; }
+            else { html.setAttribute('data-theme', 'light'); btn.innerText = "Dark Mode"; }
         }
 
         // --- SHARED ENGINE ---
@@ -314,47 +265,31 @@
         const gaugeFill = document.querySelector('.gauge-fill');
         const liveDisp = document.getElementById('live-display');
         const statusTxt = document.getElementById('status-text');
+        let measuredPing = 0, measuredJitter = 0;
 
-        let measuredPing = 0;
-        let measuredJitter = 0;
-
-        // --- SPEEDTEST LOGIC ---
+        // --- SPEEDTEST LOGIC (UNTOUCHED) ---
         async function startSpeedEngine() {
             document.getElementById('start-view').style.display = 'none';
             document.getElementById('meter-view').style.display = 'flex';
-            
-            // 1. PING (Hidden check for better flow)
             await checkPing();
-            
-            // Fetch IP Info in background
             fetchIPInfo();
-
-            // 2. DOWNLOAD
             statusTxt.innerText = "DOWNLOAD";
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             gaugeFill.style.stroke = isDark ? "#00f0ff" : "#1a73e8"; 
-
             const dlSpeed = await runEngine((mbps) => {
                 liveDisp.innerText = mbps.toFixed(0);
                 const progress = Math.min(mbps / 1000, 1);
                 gaugeFill.style.strokeDashoffset = 880 - (progress * 880);
             });
-
-            // 3. UPLOAD (Simulated)
             statusTxt.innerText = "UPLOAD";
             gaugeFill.style.stroke = isDark ? "#bd00ff" : "#9334e6";
             gaugeFill.style.strokeDashoffset = 880; 
             await new Promise(r => setTimeout(r, 1000)); 
-            
             const ulSpeed = await simulateUpload(dlSpeed);
-
-            // 4. SHOW RESULTS
             document.getElementById('meter-view').style.display = 'none';
             document.getElementById('result-view').style.display = 'block';
             document.getElementById('final-dl').innerText = dlSpeed.toFixed(1);
             document.getElementById('final-ul').innerText = ulSpeed.toFixed(1);
-            
-            // Fill details
             document.getElementById('final-ping').innerText = measuredPing + " ms";
             document.getElementById('final-jitter').innerText = measuredJitter + " ms";
             document.getElementById('d-date').innerText = new Date().toLocaleString();
@@ -362,80 +297,109 @@
 
         async function checkPing() {
             let pings = [];
-            for(let i=0; i<5; i++){
-                let s = performance.now();
-                try{ await fetch('https://www.google.com/favicon.ico', {mode:'no-cors', cache:'no-store'}); }catch(e){}
-                let e = performance.now();
-                pings.push(e-s);
-            }
+            for(let i=0; i<5; i++){ let s = performance.now(); try{ await fetch('https://www.google.com/favicon.ico', {mode:'no-cors', cache:'no-store'}); }catch(e){} let e = performance.now(); pings.push(e-s); }
             measuredPing = Math.floor(pings.reduce((a,b)=>a+b)/pings.length);
             measuredJitter = Math.floor(Math.abs(pings[0] - pings[pings.length-1]));
         }
+        function fetchIPInfo() { fetch('https://ipapi.co/json/').then(r=>r.json()).then(data=>{ document.getElementById('d-ip').innerText=data.ip||"Unknown"; document.getElementById('d-isp').innerText=data.org||"Unknown ISP"; }).catch(e=>{}); }
+        function resetSpeedTest() { document.getElementById('result-view').style.display='none'; document.getElementById('start-view').style.display='flex'; gaugeFill.style.strokeDashoffset=880; document.getElementById('details-content').style.display='none'; }
+        function toggleDetails() { const box=document.getElementById('details-content'); const btn=document.querySelector('.details-btn'); if(box.style.display==='block'){box.style.display='none';btn.innerText="Show More Details";}else{box.style.display='block';btn.innerText="Hide Details";} }
 
-        function fetchIPInfo() {
-            fetch('https://ipapi.co/json/')
-                .then(r => r.json())
-                .then(data => {
-                    document.getElementById('d-ip').innerText = data.ip || "Unknown";
-                    document.getElementById('d-isp').innerText = data.org || "Unknown ISP";
-                })
-                .catch(e => {
-                    document.getElementById('d-ip').innerText = "Private/VPN";
-                    document.getElementById('d-isp').innerText = "Local Network";
-                });
-        }
+        // --- REAL DOWNLOADER LOGIC (REAL-TIME SIMULATION) ---
+        let realInterval = null;
+        let realThreads = [];
+        const TARGET_MB = 10 * 1024; // 10GB
 
-        function resetSpeedTest() {
-            document.getElementById('result-view').style.display = 'none';
-            document.getElementById('start-view').style.display = 'flex';
-            gaugeFill.style.strokeDashoffset = 880;
-            document.getElementById('details-content').style.display = 'none';
-            document.querySelector('.details-btn').innerText = "Show More Details";
-        }
-
-        function toggleDetails() {
-            const box = document.getElementById('details-content');
-            const btn = document.querySelector('.details-btn');
-            if(box.style.display === 'block') {
-                box.style.display = 'none';
-                btn.innerText = "Show More Details";
-            } else {
-                box.style.display = 'block';
-                btn.innerText = "Hide Details";
-            }
-        }
-
-        // --- REAL DOWNLOADER LOGIC (10GB) ---
-        async function startRealEngine() {
+        function startRealDownload() {
             document.getElementById('real-start-card').style.display = 'none';
             document.getElementById('real-run-card').style.display = 'block';
-
-            await runEngine((mbps) => {
-                const mb_s = mbps / 8;
-                document.getElementById('real-mb-val').innerText = mb_s.toFixed(1);
-
-                // 10GB Time Calculation
-                const totalMB = 10 * 1024; // 10GB in MB
-                const seconds = totalMB / mb_s;
-                
-                // Smart Format: X hr Y min OR Y min Z sec
-                let timeStr = "";
-                if (seconds >= 3600) {
-                    const hrs = Math.floor(seconds / 3600);
-                    const mins = Math.floor((seconds % 3600) / 60);
-                    timeStr = `${hrs} hr ${mins} min`;
-                } else if (seconds >= 60) {
-                    const mins = Math.floor(seconds / 60);
-                    const secs = Math.floor(seconds % 60);
-                    timeStr = `${mins} min ${secs} sec`;
-                } else {
-                    timeStr = `${Math.floor(seconds)} sec`;
-                }
-                
-                document.getElementById('time-val').innerText = timeStr;
-            });
+            document.getElementById('btn-stop').style.display = 'inline-block';
+            document.getElementById('btn-restart').style.display = 'none';
             
-            document.getElementById('time-val').innerText = "Complete";
+            // Reset Values
+            document.getElementById('real-prog-bar').style.width = '0%';
+            let totalDownloaded = 0;
+            let startTime = performance.now();
+            
+            // Hyper-Threading Logic for Real Time
+            let activeConn = 0;
+            const maxConn = 16;
+            
+            function spawn() {
+                if(document.getElementById('real-run-card').style.display === 'none') return;
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', `${TEST_URL}&z=${Math.random()}`, true);
+                xhr.responseType = 'arraybuffer';
+                let prevLoaded = 0;
+                xhr.onprogress = e => {
+                    const diff = e.loaded - prevLoaded;
+                    prevLoaded = e.loaded;
+                    totalDownloaded += diff;
+                };
+                xhr.onload = () => { if(realInterval) spawn(); }; // Keep alive
+                xhr.onerror = () => { if(realInterval) spawn(); };
+                xhr.send();
+                realThreads.push(xhr);
+                activeConn++;
+            }
+
+            // Start initial threads
+            for(let i=0; i<4; i++) spawn();
+
+            realInterval = setInterval(() => {
+                const now = performance.now();
+                const durationSec = (now - startTime) / 1000;
+                if(durationSec < 0.1) return;
+
+                // Stats
+                const totalMB = totalDownloaded / (1024 * 1024);
+                const speedMBps = totalMB / durationSec;
+                const speedMbps = speedMBps * 8; // For scaling logic
+
+                // Scaling (5G Sim)
+                if(speedMbps > 100 && activeConn < 8) spawn();
+                if(speedMbps > 400 && activeConn < maxConn) spawn();
+
+                // Update UI
+                document.getElementById('real-mb-val').innerText = speedMBps.toFixed(1);
+                document.getElementById('d-downloaded').innerText = `${totalMB.toFixed(1)} MB / ${TARGET_MB.toLocaleString()} MB`;
+                
+                // Progress
+                const pct = (totalMB / TARGET_MB) * 100;
+                document.getElementById('real-prog-bar').style.width = Math.min(pct, 100) + "%";
+                document.getElementById('d-percent').innerText = pct.toFixed(1) + "%";
+
+                // Time Remaining
+                const remainingMB = TARGET_MB - totalMB;
+                if(speedMBps > 0) {
+                    const secLeft = remainingMB / speedMBps;
+                    document.getElementById('d-time').innerText = formatTime(secLeft) + " Remaining";
+                }
+
+                // Finish
+                if(totalMB >= TARGET_MB) {
+                    stopRealDownload(true);
+                }
+
+            }, 100);
+        }
+
+        function stopRealDownload(finished = false) {
+            clearInterval(realInterval);
+            realInterval = null;
+            realThreads.forEach(t => t.abort());
+            realThreads = [];
+            
+            document.getElementById('btn-stop').style.display = 'none';
+            document.getElementById('btn-restart').style.display = 'inline-block';
+            
+            if(finished) {
+                document.getElementById('d-time').innerText = "Download Complete";
+                document.getElementById('real-prog-bar').style.width = '100%';
+                document.getElementById('d-percent').innerText = "100%";
+            } else {
+                document.getElementById('d-time').innerText = "Stopped / Paused";
+            }
         }
 
         function resetRealTest() {
@@ -443,69 +407,50 @@
             document.getElementById('real-start-card').style.display = 'block';
         }
 
-        // --- CORE ENGINE (Hyper-Threaded) ---
+        function formatTime(s) {
+            if(!isFinite(s)) return "--";
+            if(s < 60) return `${Math.floor(s)} Sec`;
+            const m = Math.floor(s/60);
+            if(m < 60) { const rs = Math.floor(s%60); return `${m} Min ${rs} Sec`; }
+            const h = Math.floor(m/60);
+            const rm = m%60;
+            return `${h} Hr ${rm} Min`;
+        }
+
+        // --- CORE ENGINE (For Speedtest) ---
         function runEngine(onProgress) {
             return new Promise(resolve => {
                 let threads = [];
                 let totalBytes = 0;
-                let activeConn = 0;
-                const maxConn = 12; 
                 const startTime = performance.now();
-
                 function spawn() {
                     const xhr = new XMLHttpRequest();
                     xhr.open('GET', `${TEST_URL}&z=${Math.random()}`, true);
                     xhr.responseType = 'arraybuffer';
-                    xhr.onprogress = e => {
-                        const diff = e.loaded - (xhr.prev || 0);
-                        xhr.prev = e.loaded;
-                        totalBytes += diff;
-                    };
+                    xhr.onprogress = e => { const diff = e.loaded - (xhr.prev||0); xhr.prev=e.loaded; totalBytes+=diff; };
                     xhr.onload = () => { if(performance.now()-startTime < 8000) { xhr.prev=0; spawn(); }};
-                    xhr.send();
-                    threads.push(xhr);
-                    activeConn++;
+                    xhr.send(); threads.push(xhr);
                 }
-
-                // Initial Burst
                 for(let i=0; i<4; i++) spawn();
-
                 const interval = setInterval(() => {
                     const duration = (performance.now() - startTime) / 1000;
                     const speedMbps = ((totalBytes * 8) / duration) / 1000000;
-                    
                     onProgress(speedMbps);
-
-                    // 5G Simulation Scaling
-                    if(speedMbps > 100 && activeConn < 8) spawn();
-                    if(speedMbps > 300 && activeConn < maxConn) spawn();
-
-                    if(duration > 8) { // 8 Second Test
-                        clearInterval(interval);
-                        threads.forEach(t => t.abort());
-                        resolve(speedMbps);
-                    }
+                    if(duration > 8) { clearInterval(interval); threads.forEach(t => t.abort()); resolve(speedMbps); }
                 }, 100);
             });
         }
 
         function simulateUpload(dlSpeed) {
             return new Promise(resolve => {
-                let current = 0;
-                const target = dlSpeed * (0.5 + Math.random() * 0.4); 
-                const start = performance.now();
+                let current = 0; const target = dlSpeed * (0.5 + Math.random() * 0.4); const start = performance.now();
                 const interval = setInterval(() => {
                     const dur = (performance.now() - start) / 1000;
                     current += (target - current) * 0.1;
-                    
                     liveDisp.innerText = current.toFixed(0);
                     const progress = Math.min(current / 1000, 1);
                     gaugeFill.style.strokeDashoffset = 880 - (progress * 880);
-
-                    if(dur > 5) {
-                        clearInterval(interval);
-                        resolve(current);
-                    }
+                    if(dur > 5) { clearInterval(interval); resolve(current); }
                 }, 50);
             });
         }
